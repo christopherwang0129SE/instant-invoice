@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instant Invoice — Layout Options</title>
+<style>
+  :root {
+    --accent: #2563eb;
+    --accent-soft: #eff4ff;
+    --ink: #1a1d24;
+    --muted: #6b7280;
+    --faint: #9ca3af;
+    --line: #e5e7eb;
+    --line-soft: #f0f1f3;
+    --paper: #ffffff;
+    --page: #f4f5f7;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: var(--font);
+    background: var(--page);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+
+  .page-header {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 32px 8px;
+  }
+  .page-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    letter-spacing: -0.02em;
+  }
+  .page-header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 640px;
+  }
+
+  .gallery {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    align-items: start;
+  }
+
+  @media (max-width: 880px) {
+    .gallery { grid-template-columns: 1fr; }
+  }
+
+  /* Card wrapper (label + paper) */
+  .card-block {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .card-meta {
+    padding: 0 4px;
+  }
+  .card-meta .title-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .card-meta h2 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+  }
+  .audience-tag {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .card-meta .desc {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* Paper sheet */
+  .paper {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+    padding: 32px;
+    font-size: 13px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Generic invoice table */
+  table.items {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4px 0;
+  }
+  table.items thead th {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    font-weight: 600;
+    text-align: left;
+    padding: 0 0 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  table.items tbody td {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  table.items .num { text-align: right; white-space: nowrap; }
+  .desc-cell { color: var(--ink); }
+
+  /* Totals block */
+  .totals {
+    margin-top: 16px;
+    margin-left: auto;
+    width: 220px;
+  }
+  .totals .row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    color: var(--muted);
+  }
+  .totals .row.grand {
+    border-top: 1px solid var(--line);
+    margin-top: 4px;
+    padding-top: 10px;
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .totals .row.grand .amt { color: var(--accent); }
+
+  .notes {
+    color: var(--faint);
+    font-size: 12px;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--line);
+    border: 0;
+    margin: 20px 0;
+  }
+
+  /* ============ Layout 1: Personal / Freelancer ============ */
+  .l1 .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .l1 .head .big-title {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .l1 .head .meta {
+    text-align: right;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .l1 .head .meta .inv-no {
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .parties {
+    display: flex;
+    gap: 32px;
+  }
+  .parties .col { flex: 1; }
+  .label-sm {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .party-name { font-weight: 600; }
+  .party-detail { color: var(--muted); font-size: 12px; }
+
+  /* ============ Layout 2: Classic Business ============ */
+  .l2 .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
+  .l2 .logo-box {
+    width: 54px;
+    height: 54px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--faint);
+    margin-bottom: 12px;
+  }
+  .l2 .sender-name { font-weight: 700; font-size: 15px; }
+  .l2 .sender-detail { color: var(--muted); font-size: 12px; }
+  .l2 .top-right { text-align: right; }
+  .l2 .top-right .word {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .l2 .top-right .kv {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .l2 .top-right .kv b { color: var(--ink); font-weight: 600; }
+  .l2 .billto {
+    background: #f7f8fa;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+  }
+  .l2 .bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: 32px;
+    margin-top: 20px;
+  }
+  .l2 .bottom .notes-col { flex: 1; max-width: 50%; }
+  .l2 .totals { margin-top: 0; }
+
+  /* ============ Layout 3: Modern Professional ============ */
+  .l3 { padding-left: 40px; }
+  .l3 .accent-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    background: var(--accent);
+  }
+  .l3 .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
+  .l3 .accent-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+  .l3 .big-total {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-top: 2px;
+  }
+  .l3 .top-right { text-align: right; }
+  .l3 .top-right .inv-no {
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .l3 .due-pill {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .l3 .parties .col {
+    border-left: 2px solid var(--line);
+    padding-left: 12px;
+  }
+
+  /* ============ Layout 4: Quick Receipt ============ */
+  .l4 {
+    max-width: 380px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  .l4 .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6px;
+  }
+  .l4 .sender-name { font-weight: 700; font-size: 15px; }
+  .l4 .date { color: var(--muted); font-size: 12px; }
+  .l4 .inv-no {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: right;
+  }
+  .l4 .inv-no b { color: var(--ink); }
+  .l4 .to-line {
+    color: var(--muted);
+    font-size: 13px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 4px;
+  }
+  .l4 .to-line b { color: var(--ink); font-weight: 600; }
+  .l4 .grand-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 2px solid var(--ink);
+    font-weight: 700;
+    font-size: 17px;
+  }
+  .l4 .grand-row .amt { color: var(--accent); }
+
+  .gallery-caption {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px 56px;
+    color: var(--faint);
+    font-size: 12px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+  <header class="page-header">
+    <h1>Instant Invoice — Layout Options</h1>
+    <p>Frontend-only mockups exploring invoice layouts for private and business users. Every card below uses the same sample data so the designs can be compared structurally.</p>
+  </header>
+
+  <main class="gallery">
+
+    <!-- ===================== Layout 1 ===================== -->
+    <section class="card-block">
+      <div class="card-meta">
+        <div class="title-row">
+          <h2>Personal / Freelancer</h2>
+          <span class="audience-tag">Private users</span>
+        </div>
+        <p class="desc">Warm and straightforward. Name fields up top, line items below, minimal clutter.</p>
+      </div>
+      <div class="paper l1">
+        <div class="head">
+          <div class="big-title">Invoice</div>
+          <div class="meta">
+            <div class="inv-no">INV-2026-042</div>
+            <div>Date: Jun 17, 2026</div>
+            <div>Due: Jul 1, 2026</div>
+          </div>
+        </div>
+        <hr class="divider">
+        <div class="parties">
+          <div class="col">
+            <div class="label-sm">From</div>
+            <div class="party-name">Jordan Rivera</div>
+            <div class="party-detail">Freelance Designer · jordan@email.com</div>
+          </div>
+          <div class="col">
+            <div class="label-sm">Bill to</div>
+            <div class="party-name">Acme Studio LLC</div>
+            <div class="party-detail">123 Market St · San Francisco, CA</div>
+          </div>
+        </div>
+        <hr class="divider">
+        <table class="items">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th class="num">Qty</th>
+              <th class="num">Rate</th>
+              <th class="num">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="desc-cell">Brand identity refresh</td><td class="num">1</td><td class="num">$1,200.00</td><td class="num">$1,200.00</td></tr>
+            <tr><td class="desc-cell">Social media templates (12)</td><td class="num">12</td><td class="num">$45.00</td><td class="num">$540.00</td></tr>
+            <tr><td class="desc-cell">Consultation — 2 hrs</td><td class="num">2</td><td class="num">$95.00</td><td class="num">$190.00</td></tr>
+          </tbody>
+        </table>
+        <div class="totals">
+          <div class="row"><span>Subtotal</span><span class="num">$1,930.00</span></div>
+          <div class="row"><span>Tax (8%)</span><span class="num">$154.40</span></div>
+          <div class="row grand"><span>Total due</span><span class="amt num">$2,084.40</span></div>
+        </div>
+        <hr class="divider">
+        <p class="notes">Payment via bank transfer within 14 days. Thank you for your business.</p>
+      </div>
+    </section>
+
+    <!-- ===================== Layout 2 ===================== -->
+    <section class="card-block">
+      <div class="card-meta">
+        <div class="title-row">
+          <h2>Classic Business</h2>
+          <span class="audience-tag">Business users</span>
+        </div>
+        <p class="desc">Traditional invoice with logo slot, formal bill-to block, and payment terms area.</p>
+      </div>
+      <div class="paper l2">
+        <div class="top">
+          <div class="top-left">
+            <div class="logo-box">LOGO</div>
+            <div class="sender-name">Jordan Rivera</div>
+            <div class="sender-detail">Freelance Designer</div>
+            <div class="sender-detail">jordan@email.com</div>
+          </div>
+          <div class="top-right">
+            <div class="word">INVOICE</div>
+            <div class="kv"><span>No.</span><b>INV-2026-042</b></div>
+            <div class="kv"><span>Issued</span><b>Jun 17, 2026</b></div>
+            <div class="kv"><span>Due</span><b>Jul 1, 2026</b></div>
+          </div>
+        </div>
+        <div class="billto">
+          <div class="label-sm">Bill to</div>
+          <div class="party-name">Acme Studio LLC</div>
+          <div class="party-detail">123 Market St · San Francisco, CA</div>
+        </div>
+        <table class="items">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th class="num">Qty</th>
+              <th class="num">Rate</th>
+              <th class="num">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="desc-cell">Brand identity refresh</td><td class="num">1</td><td class="num">$1,200.00</td><td class="num">$1,200.00</td></tr>
+            <tr><td class="desc-cell">Social media templates (12)</td><td class="num">12</td><td class="num">$45.00</td><td class="num">$540.00</td></tr>
+            <tr><td class="desc-cell">Consultation — 2 hrs</td><td class="num">2</td><td class="num">$95.00</td><td class="num">$190.00</td></tr>
+          </tbody>
+        </table>
+        <div class="bottom">
+          <div class="notes-col">
+            <div class="label-sm">Payment terms</div>
+            <p class="notes">Payment via bank transfer within 14 days. Thank you for your business.</p>
+          </div>
+          <div class="totals">
+            <div class="row"><span>Subtotal</span><span class="num">$1,930.00</span></div>
+            <div class="row"><span>Tax (8%)</span><span class="num">$154.40</span></div>
+            <div class="row grand"><span>Total due</span><span class="amt num">$2,084.40</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== Layout 3 ===================== -->
+    <section class="card-block">
+      <div class="card-meta">
+        <div class="title-row">
+          <h2>Modern Professional</h2>
+          <span class="audience-tag">Both</span>
+        </div>
+        <p class="desc">Accent sidebar, total upfront, due-date badge. Works for freelancers and small teams.</p>
+      </div>
+      <div class="paper l3">
+        <div class="accent-bar"></div>
+        <div class="top">
+          <div class="top-left">
+            <div class="accent-label">Invoice</div>
+            <div class="big-total">$2,084.40</div>
+          </div>
+          <div class="top-right">
+            <div class="inv-no">INV-2026-042</div>
+            <span class="due-pill">Due Jul 1, 2026</span>
+          </div>
+        </div>
+        <div class="parties">
+          <div class="col">
+            <div class="label-sm">From</div>
+            <div class="party-name">Jordan Rivera</div>
+            <div class="party-detail">Freelance Designer · jordan@email.com</div>
+          </div>
+          <div class="col">
+            <div class="label-sm">To</div>
+            <div class="party-name">Acme Studio LLC</div>
+            <div class="party-detail">123 Market St · San Francisco, CA</div>
+          </div>
+        </div>
+        <hr class="divider">
+        <table class="items">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th class="num">Qty</th>
+              <th class="num">Rate</th>
+              <th class="num">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="desc-cell">Brand identity refresh</td><td class="num">1</td><td class="num">$1,200.00</td><td class="num">$1,200.00</td></tr>
+            <tr><td class="desc-cell">Social media templates (12)</td><td class="num">12</td><td class="num">$45.00</td><td class="num">$540.00</td></tr>
+            <tr><td class="desc-cell">Consultation — 2 hrs</td><td class="num">2</td><td class="num">$95.00</td><td class="num">$190.00</td></tr>
+          </tbody>
+        </table>
+        <div class="bottom" style="display:flex; justify-content:space-between; gap:32px; margin-top:16px;">
+          <div class="notes-col" style="flex:1; max-width:50%;">
+            <div class="label-sm">Notes</div>
+            <p class="notes">Payment via bank transfer within 14 days. Thank you for your business.</p>
+          </div>
+          <div class="totals" style="margin-top:0;">
+            <div class="row"><span>Subtotal</span><span class="num">$1,930.00</span></div>
+            <div class="row"><span>Tax (8%)</span><span class="num">$154.40</span></div>
+            <div class="row grand"><span>Total due</span><span class="amt num">$2,084.40</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== Layout 4 ===================== -->
+    <section class="card-block">
+      <div class="card-meta">
+        <div class="title-row">
+          <h2>Quick Receipt</h2>
+          <span class="audience-tag">Private users</span>
+        </div>
+        <p class="desc">Single-screen, receipt-style. Fewer columns — ideal for fast mobile invoicing.</p>
+      </div>
+      <div class="paper l4">
+        <div class="top">
+          <div>
+            <div class="sender-name">Jordan Rivera</div>
+            <div class="date">Jun 17, 2026</div>
+          </div>
+          <div class="inv-no"><b>INV-2026-042</b></div>
+        </div>
+        <div class="to-line">To: <b>Acme Studio LLC</b></div>
+        <table class="items">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th class="num">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="desc-cell">Brand identity refresh</td><td class="num">$1,200.00</td></tr>
+            <tr><td class="desc-cell">Social media templates (12)</td><td class="num">$540.00</td></tr>
+            <tr><td class="desc-cell">Consultation — 2 hrs</td><td class="num">$190.00</td></tr>
+          </tbody>
+        </table>
+        <div class="grand-row">
+          <span>Total</span>
+          <span class="amt">$2,084.40</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <p class="gallery-caption">Static mockups for review — the working generator is built separately.</p>
+
+</body>
+</html>
