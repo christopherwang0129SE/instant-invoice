@@ -2,7 +2,15 @@
 
 A free, **open-source**, 100% frontend invoice generator for **private users and companies**. No backend, no account, no login — just open it in a browser and start invoicing.
 
-## Use it
+## Live demo
+
+| | URL |
+|---|-----|
+| **Invoice app** | https://christopherwang0129SE.github.io/instant-invoice/ |
+| **Marketing site** | https://christopherwang0129SE.github.io/instant-invoice/site/ |
+| **Source code** | https://github.com/christopherwang0129SE/instant-invoice |
+
+## Use it locally
 
 Double-click `index.html`, or:
 
@@ -42,6 +50,8 @@ All data stays **local in your browser** (`localStorage`). There is no backend, 
 | `styles.css` | Layout, theme, and print styles |
 | `app.js` | Line items, totals, OCR validation, autosave, exports |
 | `LICENSE` | MIT License |
+| `layouts-preview.html` | Static gallery of four layout mockups |
+| `site/` | Demo marketing landing page |
 | `README.md` | This file |
 
 ## Contributing
